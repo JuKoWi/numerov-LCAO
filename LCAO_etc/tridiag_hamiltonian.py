@@ -29,3 +29,4 @@ if __name__ == "__main__":
     plt.show()
     
 
+# ATTENTION states are not normalized with respect to standard inner product for square integrable functions

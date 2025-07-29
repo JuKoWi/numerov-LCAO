@@ -6,8 +6,8 @@ import numpy as np
 
 #claculation parameters
 D = 2
-N_SINGLE =20 
-N_CENTERS = 2
+N_SINGLE = 200
+N_CENTERS = 30   
 N_STATES = 5  # number of atomic states used for every center
 
 
@@ -83,6 +83,7 @@ def calc_S(phi_ao, x_space):
 
 #useful functions
 # why are there nonzero values at the boundaries?
+# alternatively instead of zero padding 
 def grid_laplacian(wf, x_space):
     h = x_space[1] - x_space[0]
     laplacian = np.zeros(np.shape(wf))
@@ -150,7 +151,7 @@ if __name__ == "__main__":
     show_orb = range(N_CENTERS * 3)
     # for i in show_orb:
     #     plt.plot(x_space, mol_orb[i] + E[i], label=f"{E[i]:.2f}")
-    plt.plot(x_space, mol_orb[2] + E[2])
+    plt.plot(x_space, mol_orb[0] + E[0])
     plt.plot(x_space, pot, ls="--")
     print(phi_ao.shape[0])
     # plt.legend()
