@@ -16,13 +16,6 @@ def apply_nabla(x_space):
     nabla_mat = nabla_mat * (1/(2*h))
     return nabla_mat 
 
-# def make_u_hamiltonian(k_vec, V, x_space):
-#     v_mat = np.diag(V, k=0) 
-#     nabla_k = apply_nabla_k(k_vec, x_space)
-#     kin_mat = nabla_k @ nabla_k # ATTENTION: Hamiltonian is not nearly tridiagonal any more
-#     h_mat = 0.5 * kin_mat + v_mat
-#     print(h_mat.shape)
-#     return sparse.csr_matrix(h_mat)
 
 def make_k_hamiltonian(k_vec, V, x_space):
     v_mat = np.diag(V, k=0)
