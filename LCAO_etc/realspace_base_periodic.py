@@ -8,7 +8,7 @@ from scipy.sparse.linalg import eigsh
 from scipy.linalg import eigh
 
 
-def make_potential_unitcell(atom_pot, n_points, a): # a is length of the unit cell
+def make_potential_unitcell(atom_pot, n_points, a): # a is length of the unit cell, n_points the number of points that will be in each unit cell of the supercell
     n_wells = 30 
     x_space = np.linspace(0, n_wells * a, n_wells * n_points+1) # linspace guarantees even spacing for certain number of points
     V_tot = np.zeros(x_space.shape)
