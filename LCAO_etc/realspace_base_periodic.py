@@ -24,9 +24,9 @@ def make_potential_unitcell(atom_pot, n_points, a): # a is length of the unit ce
 def make_supercell(x_space, V_unit, n_super):
     n_points = len(x_space) - 1
     max = x_space[-1]
-    long_space = np.linspace(0, max*n_super, n_points*n_super, endpoint=False)# dont repeat endpoint
+    long_space = np.linspace(-max*n_super, max*n_super, n_points*n_super*2, endpoint=False)# dont repeat endpoint
     V_unit = V_unit[:-1]
-    long_V = np.tile(V_unit, reps=n_super)
+    long_V = np.tile(V_unit, reps=n_super*2)
     return long_space, long_V # returns array where the last point is not symmetry equivalent to first point
 
 # create laplacian matrix (as np)
