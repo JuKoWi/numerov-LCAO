@@ -21,11 +21,12 @@ def shifted_function(R, m, a, x):
 class LCAOIntegrals:
     R_max = 20 # fixed cutoff radius for orbital interaction
     m_max = 5 # use 5 atomic orbitals max
-    def __init__(self, a, n_points):
+    def __init__(self, a, n_points, cached_int):
         self.R_max = 20
         self.m_max = 5
         self.a = a
         self.n_points = n_points #grid points per uni cell
+        self.cached_int = cached_int
 
     def create_potential(self):
         x_u, V_u = make_potential_unitcell(lambda x : poeschl_teller(x, lam=5), n_points=self.n_points, a=self.a)
@@ -33,7 +34,7 @@ class LCAOIntegrals:
     
     def calc_S_mat(self):
         self.S_mat = np.zeros((self.R_max, self.m_max, self.m_max)) 
-        if os.path.exists("S_mat.npy"):
+        if self.cached_int and os.path.exists("S_mat.npy"):
             self.S_mat = np.load("S_mat.npy")
         else:
             for R in range(self.R_max):
@@ -43,7 +44,7 @@ class LCAOIntegrals:
             np.save("S_mat.npy", self.S_mat)
     
     def calc_H_mat(self):
-        if os.path.exists("H_mat.npy"):
+        if self.cached_int and os.path.exists("H_mat.npy"):
             self.H_mat = np.load("H_mat.npy")
         else:
             self.H_mat = np.zeros((self.R_max, self.m_max, self.m_max))
@@ -78,22 +79,21 @@ class Crystal:
 
     R_max = 20
 
-    def __init__(self, a, n_points, delta_k):
+    def __init__(self, a, n_points, delta_k, cached_int=False):
         self.a = a
         self.n_points = n_points
         self.k_list = np.arange(-np.pi/a, np.pi/a, delta_k)
         self.n_blocks = len(self.k_list)
         self.m_max = np.shape(np.load("numerov-five.npy"))[0]
+        self.cached_int = cached_int
 
     def get_interals(self):
-        self.integrals = LCAOIntegrals(a=self.a, n_points=self.n_points)
+        self.integrals = LCAOIntegrals(a=self.a, n_points=self.n_points, cached_int=self.cached_int)
         self.integrals.create_potential()
         self.integrals.calc_S_mat()
         self.integrals.calc_H_mat()
 
-    def solve_k_blocks(self, n_aorbs):
-        if n_aorbs < self.m_max:
-            self.m_max = n_aorbs
+    def solve_k_blocks(self):
         self.S_blocks = np.zeros((self.n_blocks, self.m_max, self.m_max), dtype='complex')
         self.H_blocks = np.zeros((self.n_blocks, self.m_max, self.m_max), dtype='complex')
         self.c_vecs = np.zeros((self.n_blocks, self.m_max, self.m_max), dtype='complex')
@@ -142,8 +142,7 @@ class Crystal:
     
 
 if __name__ == "__main__":
-    crystal = Crystal(a=0.5, n_points=100, delta_k=0.01)
+    crystal = Crystal(a=3, n_points=100, delta_k=0.01, cached_int=False)
     crystal.get_interals()
-    crystal._add_phase_integrals(1, 1, 1, True)
-    crystal.solve_k_blocks(n_aorbs=4)
+    crystal.solve_k_blocks()
     crystal.plot_bands()
