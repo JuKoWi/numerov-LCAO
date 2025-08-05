@@ -17,7 +17,7 @@ def make_potential_unitcell(atom_pot, n_points, a): # a is length of the unit ce
     unit_start = int(n_wells * n_points * 0.5) # first ...
     unit_stop = int(n_points * (n_wells*0.5 + 1)) # ... and last element to cut out
     V_unit = V_tot[unit_start : unit_stop + 1] # second index is inclusive
-    V_unit += -np.max(V_unit)
+    # V_unit += -np.max(V_unit)
     x_space = x_space[unit_start : unit_stop + 1] - x_space[unit_start]
     return x_space, V_unit # returns arrays where first and last elements correspond to lattice points
 
